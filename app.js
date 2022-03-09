@@ -1,7 +1,12 @@
 let dQS = (id) => document.querySelector(id)
 let itemData = []
 let mainData = { itemData }
-
+let clearItemData = () => {
+    let length = itemData.length
+    for (let i = 0; i <= length; i++) {
+        itemData.pop(i)
+    }
+}
 let getData = () => {
     let data = localStorage.getItem('mainData')
     let mainData
@@ -34,6 +39,7 @@ let printData = ({ amount, price, fees, quantity }) => {
     printingToDiv(amount, price, fees, quantity)
 }
 let printingToDiv = (amount, price, fees, quantity) => {
+    quantity = quantity.toFixed(3)
     const parents = dQS('#parents')
     let div = document.createElement('div')
     div.classList.add('row')
@@ -66,6 +72,7 @@ dQS('#calculate').addEventListener('click', () => {
 dQS('#clear-data').addEventListener('click', () => {
     localStorage.removeItem('mainData')
     dQS('#parents').textContent = ''
+    clearItemData()
 })
 let saveItem = () => {
     let allData = JSON.stringify(mainData)
@@ -74,11 +81,11 @@ let saveItem = () => {
 let loadData = () => {
     let allData = getData()
     if (allData == "empty") {
-        console.log('empty')
+        // console.log('empty')
     } else {
         loadAndPrint()
     }
-    console.log(allData)
+    // console.log(allData)
 }
 let loadAndPrint = () => {
     let allData = localStorage.getItem('mainData')
@@ -86,7 +93,7 @@ let loadAndPrint = () => {
 
     let items = allData.itemData
     for (let item of items) {
-        console.log(item)
+        // console.log(item)
         let { amount, price, fees } = item
         addData(amount, price, fees)
     }
