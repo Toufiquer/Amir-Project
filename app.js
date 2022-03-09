@@ -17,16 +17,20 @@ let addData = (amount, price, fees) => {
     return item
 }
 let printData = () => {
-    printingToDiv()
+
+
+    
+    let { amount, price, fees, quantity } = { amount: 200, price: 10, fees: 12, quantity: 15 }
+    printingToDiv(amount, price, fees, quantity)
 }
-let printingToDiv = () => {
+let printingToDiv = (amount, price, fees, quantity) => {
     const parents = dQS('#parents')
     let div = document.createElement('div')
     div.classList.add('row')
     div.innerHTML = `
         <div class="col-12 m-2">
             <div class="alert alert-primary" role="alert">
-                Amount: $ {amount} | Price:  $ {price} | fees:  $ {fees} | Quantity: $ {quantity}
+                Amount: ${amount} | Price:  ${price} | fees:  ${fees} | Quantity: ${quantity}
                 <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
                     aria-label="Close"></button>
             </div>
@@ -45,6 +49,6 @@ dQS('#calculate').addEventListener('click', () => {
     // console.log(price)
     // console.log(fees)
     let array = addData(amount, price, fees)
-    console.log(array)
-    console.log(mainData)
+    // console.log(array)
+    // console.log(mainData)
 })
