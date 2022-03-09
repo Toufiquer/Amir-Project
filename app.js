@@ -14,20 +14,23 @@ let getData = () => {
 }
 // Add item to item Data
 let addData = (amount, price, fees) => {
+    let quantity = amount / price
     const item = {
         amount: 100,
         price: 92,
-        fees: 1.85
+        fees: 1.85,
+        quantity: 20
     }
     item.amount = amount
     item.price = price
     item.fees = fees
+    item.quantity = quantity
     itemData.push(item)
-    printData()
+    // printData(item.amount, item.price, item.fees, item.quantity)
+    printData(item)
     return item
 }
-let printData = () => {
-    let { amount, price, fees, quantity } = { amount: 200, price: 10, fees: 12, quantity: 15 }
+let printData = ({ amount, price, fees, quantity }) => {
     printingToDiv(amount, price, fees, quantity)
 }
 let printingToDiv = (amount, price, fees, quantity) => {
