@@ -87,7 +87,6 @@ let deleteDiv = index => {
   let getData = getItem();
   let newData = getData.filter(x => x.id != index);
   saveData(newData);
-  console.log(index, getData, newData);
   printingData();
 };
 dQS("#calculate").addEventListener("click", () => {
