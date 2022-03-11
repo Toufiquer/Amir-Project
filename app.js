@@ -18,9 +18,17 @@ let getData = () => {
     return mainData
 }
 // Add item to item Data
+let uniqueIdF =()=>{
+    let id = 0
+    return ()=>{
+        return id +=1
+    }
+}
+let uniqueId = uniqueIdF()
 let addData = (amount, price, fees) => {
     let quantity = amount / price
     const item = {
+        id: 1,
         amount: 100,
         price: 92,
         fees: 1.85,
@@ -30,15 +38,16 @@ let addData = (amount, price, fees) => {
     item.price = price
     item.fees = fees
     item.quantity = quantity
+    item.id = uniqueId(1)
     itemData.push(item)
     // printData(item.amount, item.price, item.fees, item.quantity)
     printData(item)
     return item
 }
-let printData = ({ amount, price, fees, quantity }) => {
-    printingToDiv(amount, price, fees, quantity)
+let printData = ({ amount, price, fees, quantity,id }) => {
+    printingToDiv(amount, price, fees, quantity,id)
 }
-let printingToDiv = (amount, price, fees, quantity) => {
+let printingToDiv = (amount, price, fees, quantity,id) => {
     quantity = quantity.toFixed(3)
     const parents = dQS('#parents')
     let div = document.createElement('div')
@@ -47,7 +56,7 @@ let printingToDiv = (amount, price, fees, quantity) => {
         <div class="col-12 m-2">
             <div class="alert alert-primary" role="alert">
                 Amount: ${amount} | Price:  ${price} | fees:  ${fees} | Quantity: ${quantity}
-                <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                <button onclick="deleteDiv('${id}')" type="button" class="btn-close float-end" data-bs-dismiss="alert"
                     aria-label="Close"></button>
             </div>
         </div>
@@ -69,10 +78,13 @@ dQS('#calculate').addEventListener('click', () => {
     // console.log(mainData)
     saveItem()
 })
-dQS('#clear-data').addEventListener('click', () => {
+let clearAll = ()=>{
     localStorage.removeItem('mainData')
     dQS('#parents').textContent = ''
     clearItemData()
+}
+dQS('#clear-data').addEventListener('click', () => {
+    clearAll()
 })
 let saveItem = () => {
     let allData = JSON.stringify(mainData)
@@ -98,5 +110,16 @@ let loadAndPrint = () => {
         addData(amount, price, fees)
     }
 }
-
 loadData()
+let deleteDiv = (id)=>{
+    let newArray = itemData.filter(x=>x.id!=id)
+    console.log(newArray)
+    clearAll()
+    itemData = [...newArray]
+    mainData = { itemData }
+    console.log(itemData)
+    saveItem()
+    dQS('#parents').textContent =''
+        loadData()
+    // // console.log(itemData,newArray)
+}
