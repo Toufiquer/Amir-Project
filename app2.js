@@ -55,25 +55,32 @@ let saveData = data => {
   let dataStr = JSON.stringify(data);
   localStorage.setItem("mainData", dataStr);
 };
-let printingData = () => {
+let printingData = (data = true) => {
   let parents = dQS("#parents");
   parents.textContent = "";
   let getData = getItem();
-  for (let item of getData) {
-    console.log(item);
-    let { id, amount, price, fees, quantity } = { item };
-    let div = document.createElement("div");
-    div.classList.add("row");
-    div.innerHTML = `
+  if (Array.isArray(getData)) {
+    dQS("#nodata").style.display = "none";
+    for (let item of getData) {
+      let div = document.createElement("div");
+      div.classList.add("row");
+      div.innerHTML = `
         <div class="col-12 m-2">
             <div class="alert alert-primary" role="alert">
-                Amount: ${amount} | Price:  ${price} | fees:  ${fees} | Quantity: ${quantity}
-                <button onclick="deleteDiv('${id}')" type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                Amount: ${item.amount} | Price:  ${item.price} | fees:  ${item.fees} | Quantity: ${item.quantity}
+                <button onclick="deleteDiv('${item.id}')" type="button" class="btn-close float-end" data-bs-dismiss="alert"
                     aria-label="Close"></button>
             </div>
         </div>
     `;
-    parents.appendChild(div);
+      parents.appendChild(div);
+    }
+  } else {
+    dQS("#nodata").style.display = "block";
+    dQS("#nodata-span").innerText = "Ops! Nothing was found.";
+    if (data == false) {
+      dQS("#nodata-span").innerText = "All Data has been Deleted";
+    }
   }
 };
 dQS("#calculate").addEventListener("click", () => {
@@ -90,4 +97,6 @@ dQS("#clear-data").addEventListener("click", () => {
   localStorage.removeItem("mainData");
   console.clear();
   dQS("#parents").textContent = "";
+  printingData(false);
 });
+printingData();
