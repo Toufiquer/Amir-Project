@@ -1,32 +1,93 @@
-let dQS = (id) => document.querySelector(id)
-let getItem = ()=>{
-    let item = localStorage.getItem('mainData')
-    let mainData
-    if(item){
-        mainData = item
-    }else{
-        let singleItem = []
-        mainData = {singleItem}
+let dQS = id => document.querySelector(id);
+let getItem = () => {
+  let item = localStorage.getItem("mainData");
+  let mainData;
+  if (item) {
+    item = JSON.parse(item);
+    mainData = item;
+  } else {
+    let singleItem = [];
+    mainData = { singleItem };
+  }
+  return mainData;
+};
+let createId = () => {
+  let uniqueId = 0;
+  let allData = getItem();
+  if (Array.isArray(allData)) {
+    let allId = [];
+    for (let item of allData) {
+      allId.push(item.id);
     }
-    return mainData
-}
-let createItem= (amount, price, fees)=>{
-    let singleIndex={
-        amount: 100,
-        price: 20,
-        fees: 10,
-        quantity: 5
+    while (true) {
+      uniqueId++;
+      let isGet = allId.indexOf(uniqueId);
+      if (isGet == -1) {
+        break;
+      }
     }
-    singleIndex.amount = amount
-    singleIndex.price = price
-    singleIndex.fees = fees
-    singleIndex.quantity = amount / price
-    return singleIndex
-}
-let addToArray =(item,mainData)=>{
-
-}
-let singleOfIndex = createItem(100,10,10)
-let mainData = getItem()
-console.log(mainData.singleItem.push(singleOfIndex))
-console.log(mainData)
+  }
+  return uniqueId;
+};
+let createItem = (amount, price, fees) => {
+  let quantity = amount / price;
+  quantity = quantity.toFixed(3);
+  let id = createId();
+  let item = {
+    id: id,
+    amount: amount,
+    price: price,
+    fees: fees,
+    quantity: quantity,
+  };
+  return item;
+};
+let combineData = (data, mainData) => {
+  if (Array.isArray(mainData)) {
+    mainData.push(data);
+  } else {
+    mainData = mainData.singleItem;
+    mainData.push(data);
+  }
+  return mainData;
+};
+let saveData = data => {
+  let dataStr = JSON.stringify(data);
+  localStorage.setItem("mainData", dataStr);
+};
+let printingData = () => {
+  let parents = dQS("#parents");
+  parents.textContent = "";
+  let getData = getItem();
+  for (let item of getData) {
+    console.log(item);
+    let { id, amount, price, fees, quantity } = { item };
+    let div = document.createElement("div");
+    div.classList.add("row");
+    div.innerHTML = `
+        <div class="col-12 m-2">
+            <div class="alert alert-primary" role="alert">
+                Amount: ${amount} | Price:  ${price} | fees:  ${fees} | Quantity: ${quantity}
+                <button onclick="deleteDiv('${id}')" type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+    parents.appendChild(div);
+  }
+};
+dQS("#calculate").addEventListener("click", () => {
+  let amount = dQS("#input-amount").value;
+  let price = dQS("#input-price").value;
+  let fees = dQS("#input-fees").value;
+  let data = createItem(amount, price, fees);
+  let mainData = getItem();
+  let newData = combineData(data, mainData);
+  saveData(newData);
+  printingData();
+});
+dQS("#clear-data").addEventListener("click", () => {
+  localStorage.removeItem("mainData");
+  console.clear();
+  dQS("#parents").textContent = "";
+});
